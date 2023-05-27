@@ -3,7 +3,7 @@ import datetime as dt
 from sqlalchemy.orm import relationship
 from sqlmodel import SQLModel, Field, Relationship
 
-from health_time.auth.models.user_model import User
+from health_time.auth.models.user_model import User, UserGet
 
 
 class AppointmentCreateByPatient(SQLModel):

@@ -2,7 +2,7 @@ from typing import Annotated
 
 import fastapi
 
-from . import auth, jwt
+from . import auth
 from health_time.core.database import DbSession
 from health_time.auth.models.user_model import User
 from .jwt import JwtToken
@@ -10,8 +10,8 @@ from health_time.core.storage.user_storage import UserStorage
 
 
 async def auth_user_by_token(
-    session: DbSession,
-    token: JwtToken,
+        session: DbSession,
+        token: JwtToken,
 ):
     user_storage = UserStorage(session)
     user = await user_storage.get_by_email(token.email)
@@ -46,7 +46,11 @@ async def get_current_user(
 
 CurrenUser = Annotated[User, fastapi.Depends(get_current_user)]
 
+
 # CurrenAdminUser = Annotated[
 #     user_models.User,
 #     fastapi.Depends(get_current_user_admin),
 # ]
+
+class CurrentPatient:
+    pass

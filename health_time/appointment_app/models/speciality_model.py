@@ -12,3 +12,7 @@ class SpecialityGet(SpecialityCreate):
 class Speciality(SpecialityCreate, table=True):
     __tablename__ = 'speciality'
     speciality_id: int | None = Field(default=None, primary_key=True)
+
+
+class SpecialityFilter(SQLModel):
+    city: str | None = None
