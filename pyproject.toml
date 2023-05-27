@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "healthtime"
+version = "0.1.0"
+description = ""
+authors = ["maral.ashyrova <ashirova310197@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.95.2"
+pydantic = {extras = ["email"], version = "^1.10.7"}
+uvicorn = {extras = ["standart"], version = "^0.22.0"}
+sqlmodel = "^0.0.8"
+alembic = "^1.11.1"
+asyncpg = "^0.27.0"
+python-jose = {extras = ["cryptography"], version = "^3.3.0"}
+passlib = {extras = ["cryptography"], version = "^1.7.4"}
+python-multipart = "^0.0.6"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
