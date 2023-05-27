@@ -5,7 +5,7 @@ from health_time.core.database import DbSession
 from fastapi.security import OAuth2PasswordRequestForm
 from health_time.auth.jwt import TokenResponse, JwtToken
 from health_time.auth.auth import AUTH
-from health_time.auth.dependecies import CurrenUser
+from health_time.auth.dependecies import CurrentUser
 
 router = APIRouter(prefix='/login', tags=['Auth'])
 
@@ -19,5 +19,5 @@ async def login(session: DbSession, form: OAuth2PasswordRequestForm = Depends())
 
 
 @router.get('/current_user')
-async def get_current_user(user: CurrenUser) -> UserGet:
+async def get_current_user(user: CurrentUser) -> UserGet:
     return user

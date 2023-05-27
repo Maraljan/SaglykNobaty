@@ -2,10 +2,10 @@ from typing import Annotated
 from fastapi import Depends
 
 from .storage import Storage
-from health_time.appointment_app.models.speciality_model import Speciality, SpecialityCreate
+from health_time.appointment_app.models.speciality_model import Speciality, SpecialityCreate, SpecialityFilter
 
 
-class SpecialtyStorage(Storage[Speciality, SpecialityCreate]):
+class SpecialtyStorage(Storage[Speciality, SpecialityCreate, SpecialityFilter]):
     model = Speciality
 
 

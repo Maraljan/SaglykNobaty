@@ -3,15 +3,16 @@ from typing import Annotated
 import fastapi
 
 from . import auth
-from health_time.core.database import DbSession
-from health_time.auth.models.user_model import User
 from .jwt import JwtToken
+from .models.user_model import User
+from .models.role_model import RoleName
+from health_time.core.database import DbSession
 from health_time.core.storage.user_storage import UserStorage
 
 
 async def auth_user_by_token(
-        session: DbSession,
-        token: JwtToken,
+    session: DbSession,
+    token: JwtToken,
 ):
     user_storage = UserStorage(session)
     user = await user_storage.get_by_email(token.email)
@@ -33,24 +34,45 @@ async def get_current_user(
     return await auth_user_by_token(session, token)
 
 
-# async def get_current_user_admin(
-#     user: user_models.User = fastapi.Depends(get_current_user),
-# ):
-#     if not user.is_admin:
-#         raise fastapi.HTTPException(
-#             status_code=fastapi.status.HTTP_403_FORBIDDEN,
-#             detail='forbidden',
-#         )
-#     return user
+async def get_current_user_admin(
+    user: User = fastapi.Depends(get_current_user),
+):
+    if user.user_role.role_name != RoleName.ADMIN:
+        raise fastapi.HTTPException(
+            status_code=fastapi.status.HTTP_403_FORBIDDEN,
+            detail='forbidden',
+        )
+    return user
 
 
-CurrenUser = Annotated[User, fastapi.Depends(get_current_user)]
+async def get_current_patient(
+    user: User = fastapi.Depends(get_current_user),
+):
+    if user.user_role.role_name != RoleName.PATIENT:
+        raise fastapi.HTTPException(
+            status_code=fastapi.status.HTTP_403_FORBIDDEN,
+            detail='forbidden',
+        )
+    return user
 
 
-# CurrenAdminUser = Annotated[
-#     user_models.User,
-#     fastapi.Depends(get_current_user_admin),
-# ]
+async def get_current_doctor(
+    user: User = fastapi.Depends(get_current_user),
+):
+    if user.user_role.role_name != RoleName.DOCTOR:
+        raise fastapi.HTTPException(
+            status_code=fastapi.status.HTTP_403_FORBIDDEN,
+            detail='forbidden',
+        )
+    return user
 
-class CurrentPatient:
-    pass
+
+CurrentUser = Annotated[User, fastapi.Depends(get_current_user)]
+
+CurrentAdminUser = Annotated[
+    User,
+    fastapi.Depends(get_current_user_admin),
+]
+
+CurrentPatient = Annotated[User, fastapi.Depends(get_current_patient)]
+CurrentDoctor = Annotated[User, fastapi.Depends(get_current_doctor)]
