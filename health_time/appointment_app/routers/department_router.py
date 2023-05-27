@@ -13,7 +13,7 @@ async def create_department(department_create: DepartmentCreate, storage: Depart
 
 @router.get('/')
 async def get_departments(storage: DepartmentStorageDepends) -> list[DepartmentGet]:
-    return storage.get_objects()
+    return await storage.get_objects()
 
 
 @router.delete('/{department_id}')

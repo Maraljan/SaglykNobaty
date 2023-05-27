@@ -12,7 +12,7 @@ class HospitalCreate(SQLModel):
     hospital_address: str = Field(index=True)
     hospital_photo: str | None = None
     city_id: int = Field(foreign_key='city.city_id')
-    # department_id: int = Field(foreign_key='Department.department_id')
+    department_id: int = Field(foreign_key='department.department_id')
 
 
 class HospitalGet(HospitalCreate):
@@ -23,4 +23,4 @@ class Hospital(HospitalCreate, table=True):
     __tablename__ = 'hospital'
     hospital_id: int | None = Field(default=None, primary_key=True)
     city: 'City' = Relationship(back_populates='hospitals')
-    # department: 'Department' = Relationship(back_populates='hospitals')
+    department: 'Department' = Relationship(back_populates='hospitals')

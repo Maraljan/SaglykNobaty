@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from ..models.hospital_model import HospitalGet, HospitalCreate
+from ..models.hospital_model import HospitalGet, HospitalCreate, Hospital
 from health_time.core.storage.hospital_storage import HospitalStorageDepends
 
 router = APIRouter(prefix='/hospital', tags=['Hospital'])
@@ -8,12 +8,12 @@ router = APIRouter(prefix='/hospital', tags=['Hospital'])
 
 @router.post('/')
 async def create_hospital(hospital_create: HospitalCreate, storage: HospitalStorageDepends) -> HospitalGet:
-    return storage.create_object(hospital_create)
+    return await storage.create_object(hospital_create)
 
 
 @router.get('/')
-async def get_hospitals(storage: HospitalStorageDepends) -> list[HospitalGet]:
-    return storage.get_objects()
+async def get_hospitals(storage: HospitalStorageDepends) -> list[Hospital]:
+    return await storage.get_objects()
 
 
 @router.delete('/{hospital_id}')

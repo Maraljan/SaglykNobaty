@@ -13,7 +13,7 @@ async def create_city(city_create: CityCreate, storage: CityStorageDepends) -> C
 
 @router.get('/')
 async def get_cities(storage: CityStorageDepends) -> list[CityGet]:
-    return storage.get_objects()
+    return await storage.get_objects()
 
 
 @router.delete('/{city_id}')
