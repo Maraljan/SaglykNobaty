@@ -30,5 +30,11 @@ class User(UserCreate, table=True):
     user_id: int | None = Field(default=None, primary_key=True)
     hashed_password: str
     role_id: int = Field(foreign_key='role.role_id')
-    user_role: Role = Relationship(back_populates='users', sa_relationship_kwargs={'lazy': 'selectin'})
+    user_role: Role = Relationship(
+        back_populates='users',
+        sa_relationship_kwargs={'lazy': 'selectin'},
+    )
 
+
+class UserFilter(SQLModel):
+    pass

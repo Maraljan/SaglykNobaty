@@ -2,9 +2,10 @@ from typing import Annotated
 
 import sqlmodel
 from fastapi import Depends
+from sqlmodel.sql.expression import SelectOfScalar
 
 from .storage import Storage
-from health_time.auth.models.user_model import User, UserCreate
+from health_time.auth.models.user_model import User, UserCreate, UserFilter
 from .role_storage import RoleStorageDepends
 from ...auth.models.role_model import RoleName
 from health_time.auth.auth import AUTH
@@ -24,6 +25,13 @@ class UserStorage(Storage[User, UserCreate]):
         statement = sqlmodel.select(User).where(User.email == email)
         response = await self.session.execute(statement)
         return response.scalar_one_or_none()
+
+    def _apply_filter(
+            self,
+            statement: SelectOfScalar,
+            filters: UserFilter,
+    ) -> SelectOfScalar:
+        return statement
 
 
 UserStorageDepends = Annotated[UserStorage, Depends(UserStorage)]

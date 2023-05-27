@@ -1,15 +1,19 @@
+from abc import ABC, abstractmethod
 from typing import Generic, TypeVar, Type
-from fastapi.exceptions import HTTPException
-from fastapi import status
-import sqlmodel
 
+import sqlmodel
+from sqlmodel.sql.expression import SelectOfScalar
+from fastapi import HTTPException, status
+
+from health_time.core.queries import Pagination
 from health_time.core.database import DbSession
 
 _DbModel = TypeVar('_DbModel', bound=sqlmodel.SQLModel)
 _CreateModel = TypeVar('_CreateModel', bound=sqlmodel.SQLModel)
+_FilterModel = TypeVar('_FilterModel', bound=sqlmodel.SQLModel)
 
 
-class Storage(Generic[_DbModel, _CreateModel]):
+class Storage(Generic[_DbModel, _CreateModel, _FilterModel], ABC):
 
     model: Type[_DbModel] = NotImplemented
     pk = NotImplemented
@@ -17,8 +21,21 @@ class Storage(Generic[_DbModel, _CreateModel]):
     def __init__(self, session:  DbSession):
         self.session = session
 
-    async def get_objects(self) -> list[_DbModel]:
-        statement = sqlmodel.select(self.model)
+    async def get_objects(
+        self,
+        pagination: Pagination | None = None,
+        filters: _FilterModel | None = None,
+    ) -> list[_DbModel]:
+        pagination = pagination or Pagination()
+        statement = (
+            sqlmodel.select(self.model)
+            .offset(pagination.offset)
+            .limit(pagination.limit)
+        )
+
+        if filters:
+            statement = self._apply_filter(statement, filters)
+
         response = await self.session.execute(statement)
         return response.scalars().all()
 
@@ -43,4 +60,10 @@ class Storage(Generic[_DbModel, _CreateModel]):
     async def _create_instance(self, create_data: _CreateModel) -> _DbModel:
         return self.model.from_orm(create_data)
 
-
+    @abstractmethod
+    def _apply_filter(
+        self,
+        statement: SelectOfScalar,
+        filters: _FilterModel,
+    ) -> SelectOfScalar:
+        pass

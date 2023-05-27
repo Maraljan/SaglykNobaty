@@ -25,3 +25,7 @@ class Role(RoleCreate, table=True):
     __tablename__ = 'role'
     role_id: int | None = Field(default=None, primary_key=True)
     users: list['User'] = Relationship(back_populates='user_role')
+
+
+class RoleFilter(SQLModel):
+    pass
