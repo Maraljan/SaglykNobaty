@@ -26,7 +26,5 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
         allow_credentials=True,
     )
-    app.include_router(appointment_app.router)
-    app.include_router(auth.router)
     app.include_router(patient_cabinet_app.router)
     return app
